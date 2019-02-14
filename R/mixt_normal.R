@@ -1,7 +1,3 @@
-## quiets concerns of R CMD check re: the .'s that appear in pipelines
-if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))
-
-
 #' Random Sampling of 1-dim. Mixtures of Normal Distribution
 #' 
 #' Set sample size n and parameters of MixtNormal(mu,sigma,pi).
@@ -26,6 +22,9 @@ random_mixt_normal <- function(n, mu, sigma, pi){
   # sanity check for dimension of parameters
   if (length(sigma) != n_components | length(pi) != n_components){
     stop("Error : dimension of mu, sigma and pi must be the same.")
+  }
+  if (prod(sigma > 0) != 1){
+    stop("Error : sigma is not positive.")
   }
   # 2. Main Calculation
   # decide a component that each point is sampled...
@@ -74,6 +73,9 @@ density_mixt_normal <- function(x, mu, sigma, pi){
   if (length(sigma) != n_components | length(pi) != n_components){
     stop("Error : dimension of mu, sigma and pi must be the same.")
   }
+  if (prod(sigma > 0) != 1){
+    stop("Error : sigma is not positive.")
+  }
   # 2. Main Calculation
   # calculation of probability density
   # pd_each_component : output matrix is probability densities of each component
@@ -115,6 +117,9 @@ LL_mixt_normal <- function(x, mu, sigma, pi){
   if (length(sigma) != n_components | length(pi) != n_components){
     stop("Error : dimension of mu, sigma and pi must be the same.")
   }
+  if (prod(sigma > 0) != 1){
+    stop("Error : sigma is not positive.")
+  }
   # 2. Main Calculation
   # calculation of log likelihood
   obj <- sum(log(density_mixt_normal(x, mu = mu, sigma = sigma, pi = pi)$prob_density))
@@ -134,8 +139,7 @@ LL_mixt_normal <- function(x, mu, sigma, pi){
 #' @param init_mu <double vector> : initial values of population means
 #' @param init_sigma <double vector> : initial values of population sds
 #' @param init_pi <double vector> : initial values of population rate
-#' @param history <logical double> : If you need history, you set the value TRUE. Defalut is FALSE.
-#' @return The output is the set (MLE of params, LL, estimated component of each sample point, n_iter). If you set history == TRUE, you can get hisotry of params and LL.
+#' @return The output is the set (MLE of params, LL, estimated component of each sample point, n_iter).
 #' 
 #' @importFrom dplyr data_frame
 #' @importFrom dplyr select
@@ -143,7 +147,7 @@ LL_mixt_normal <- function(x, mu, sigma, pi){
 #' @importFrom purrr map_chr
 #' @export
 #' 
-EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_pi, history = FALSE){
+EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_pi){
   # 1. Preliminalies and Error Correction
   # number of components and sample size
   sample_size <- length(x)    # sample size
@@ -152,6 +156,9 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_pi, histo
   # sanity check for dimension of parameters
   if (length(init_sigma) != n_components | length(init_pi) != n_components){
     stop("Error : dimension of mu, sigma and pi must be the same.")
+  }
+  if (prod(init_sigma > 0) != 1){
+    stop("Error : init_sigma is not positive.")
   }
   # 2. Main Calculation
   # settings of initial values
@@ -183,28 +190,25 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_pi, histo
       data_frame(iter = iter, component = 1:n_components, mu = mu, sigma = sigma, pi = pi)
     )
     # coveragement
-    if(abs(LL_history[iter+1]-LL_history[iter]) < tol){
+    if (abs(LL_history[iter+1]-LL_history[iter]) < tol){
       break    
     }
   }
   # 3. output
   n_iter <- iter
-  LL_history_df <- data_frame(iter = 0:n_iter, LL_history = LL_history)
+  LL_history_df <- data_frame(iter = 0:n_iter, log_likelihood = LL_history)
   data_estimated_component <- data_frame(x = x, estimated_component = max.col(gamma_each_component))
-  LL_last <- LL_history_df %>% filter(iter == n_iter) %>% .$LL_history
+  LL_last <- LL_history_df %>% filter(iter == n_iter) %>% .$log_likelihood
+  AIC <- -2 * LL_last + 2 * (3 * n_components - 1)
+  BIC <- -2 * LL_last + (3 * n_components - 1) * log(sample_size)
   params_last <- params_history %>% filter(iter == n_iter) %>% select(-iter)
-  if (history == TRUE){
-    obj <- list(params_history = params_history,
-                LL_history = LL_history_df,
-                params = params_last,
-                LL = LL_last,
-                estimated_component = data_estimated_component,
-                n_iter = n_iter)
-  } else{
-    obj <- list(params = params_last, 
-                LL = LL_last,
-                estimated_component = data_estimated_component,
-                n_iter = n_iter)
-  }
+  obj <- list(params = params_last,
+              log_likelihood = LL_last,
+              AIC = AIC,
+              BIC = BIC,
+              estimated_component = data_estimated_component,
+              n_iter = n_iter,
+              params_history = params_history,
+              log_likelihood_history = LL_history_df)
   return(obj)
 }

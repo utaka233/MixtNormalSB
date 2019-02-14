@@ -4,8 +4,7 @@
 \alias{EM_mixt_normal}
 \title{EM Algorithm for 1-dim. Mixtures of Normal Distribution}
 \usage{
-EM_mixt_normal(x, max_iter, tol, init_mu, init_sigma, init_pi,
-  history = FALSE)
+EM_mixt_normal(x, max_iter, tol, init_mu, init_sigma, init_pi)
 }
 \arguments{
 \item{x}{<double vector> : sample}
@@ -19,11 +18,9 @@ EM_mixt_normal(x, max_iter, tol, init_mu, init_sigma, init_pi,
 \item{init_sigma}{<double vector> : initial values of population sds}
 
 \item{init_pi}{<double vector> : initial values of population rate}
-
-\item{history}{<logical double> : If you need history, you set the value TRUE. Defalut is FALSE.}
 }
 \value{
-The output is the set (MLE of params, LL, estimated component of each sample point, n_iter). If you set history == TRUE, you can get hisotry of params and LL.
+The output is the set (MLE of params, LL, estimated component of each sample point, n_iter).
 }
 \description{
 EM Algorithm for 1-dim. Mixtures of Normal Distribution
