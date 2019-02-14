@@ -2,19 +2,22 @@
 % Please edit documentation in R/mixt_normal.R
 \name{LL_mixt_normal}
 \alias{LL_mixt_normal}
-\title{LL function : log likelihood of mixtured normal distribution}
+\title{Log Likelihood of 1-dim. Mixtures of Normal Distribution}
 \usage{
 LL_mixt_normal(x, mu, sigma, pi)
 }
 \arguments{
-\item{x}{sample point}
+\item{x}{<double vector> : sample point}
 
-\item{mu}{population means}
+\item{mu}{<double vector> : population means}
 
-\item{sigma}{population sd}
+\item{sigma}{<double vector> : population sd}
 
-\item{pi}{mixtured rate}
+\item{pi}{<double vector> : mixtured rate}
+}
+\value{
+The output is <double vector> that is loglikelihood of each point of x
 }
 \description{
-LL function : log likelihood of mixtured normal distribution
+Log Likelihood of 1-dim. Mixtures of Normal Distribution
 }

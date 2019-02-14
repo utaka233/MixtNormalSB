@@ -2,19 +2,24 @@
 % Please edit documentation in R/mixt_normal.R
 \name{density_mixt_normal}
 \alias{density_mixt_normal}
-\title{probability density function of mixtured normal distribution}
+\title{Probability Density Function of 1-dim. Mixtures of Normal Distribution}
 \usage{
 density_mixt_normal(x, mu, sigma, pi)
 }
 \arguments{
-\item{x}{sample point}
+\item{x}{<double vector> : sample point}
 
-\item{mu}{population means}
+\item{mu}{<double vector> : population means}
 
-\item{sigma}{population sd}
+\item{sigma}{<double vector> : population sd}
 
-\item{pi}{mixtured rate}
+\item{pi}{<double vector> : mixtured rate}
+}
+\value{
+The output is <data_frame> that is probability densities of each saple point at each component and mixture distribution.
 }
 \description{
-probability density function of mixtured normal distribution
+Set sample point x and parameters of MixtNormal(mu,sigma,pi).
+By definition, dimension of mu, sigma and pi must be the same.
+In the function, parameter `pi` is normalized.
 }

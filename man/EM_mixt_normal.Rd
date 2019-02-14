@@ -2,23 +2,29 @@
 % Please edit documentation in R/mixt_normal.R
 \name{EM_mixt_normal}
 \alias{EM_mixt_normal}
-\title{EM function : EM algorithm for mixtured normal distribution}
+\title{EM Algorithm for 1-dim. Mixtures of Normal Distribution}
 \usage{
-EM_mixt_normal(x, max_iter, tol, init_mu, init_sigma, init_pi)
+EM_mixt_normal(x, max_iter, tol, init_mu, init_sigma, init_pi,
+  history = FALSE)
 }
 \arguments{
-\item{x}{sample}
+\item{x}{<double vector> : sample}
 
-\item{max_iter}{maximum number of iterations}
+\item{max_iter}{<int scalar> : maximum number of iterations}
 
-\item{tol}{tolerance}
+\item{tol}{<double scalar> : tolerance}
 
-\item{init_mu}{initial values of population means}
+\item{init_mu}{<double vector> : initial values of population means}
 
-\item{init_sigma}{initial values of population sds}
+\item{init_sigma}{<double vector> : initial values of population sds}
 
-\item{init_pi}{initial values of population rate}
+\item{init_pi}{<double vector> : initial values of population rate}
+
+\item{history}{<logical double> : If you need history, you set the value TRUE. Defalut is FALSE.}
+}
+\value{
+The output is the set (MLE of params, LL, estimated component of each sample point, n_iter). If you set history == TRUE, you can get hisotry of params and LL.
 }
 \description{
-EM function : EM algorithm for mixtured normal distribution
+EM Algorithm for 1-dim. Mixtures of Normal Distribution
 }

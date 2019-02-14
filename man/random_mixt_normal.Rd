@@ -2,19 +2,24 @@
 % Please edit documentation in R/mixt_normal.R
 \name{random_mixt_normal}
 \alias{random_mixt_normal}
-\title{random sampling of mixtured normal distribution}
+\title{Random Sampling of 1-dim. Mixtures of Normal Distribution}
 \usage{
 random_mixt_normal(n, mu, sigma, pi)
 }
 \arguments{
-\item{n}{sample size}
+\item{n}{<int scalar> : sample size}
 
-\item{mu}{population means}
+\item{mu}{<double vector> : population means}
 
-\item{sigma}{population sd}
+\item{sigma}{<double vector> : population sds}
 
-\item{pi}{mixtured rate}
+\item{pi}{<double vector> : mixtured rate}
+}
+\value{
+The output will be <double vector> of size n that you input.
 }
 \description{
-random sampling of mixtured normal distribution
+Set sample size n and parameters of MixtNormal(mu,sigma,pi).
+By definition, dimension of mu, sigma and pi must be the same.
+In the function, parameter `pi` is normalized.
 }
