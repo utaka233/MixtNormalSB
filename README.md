@@ -8,7 +8,7 @@
 をサポートするR言語のパッケージです。主に混合正規分布の理解の助けになるパッケージを提供したいという思いから、株式会社すうがくぶんかの教材のひとつとして作成しています。なお、このパッケージではtidyverse styleを尊重するよう心掛けています。
 
 ## Introduction
-`MixtNormalSB`パッケージは`devtools`パッケージの`install_github`関数を用いてインストールすることができます。
+`MixtNormalSB`パッケージは、`devtools`パッケージの`install_github`関数を用いてインストールすることができます。
 ```
 # Let's install and load our package !
 devtools::install_github("utaka233/MixtNormalSB")
