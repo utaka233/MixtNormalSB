@@ -11,7 +11,7 @@
 `MixtNormalSB`パッケージは`devtools`パッケージの`install_github`関数を用いてインストールすることができます。
 ```
 # Let's install and load our package !
-install_github("utaka233/MixtNormalSB")
+devtools::install_github("utaka233/MixtNormalSB")
 library(MixtNormalSB)
 ```
 代表的な使い方の一つは、1次元混合正規分布からの乱数生成とEM algorithmによる最尤推定です。特に
