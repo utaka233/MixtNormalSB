@@ -1,4 +1,4 @@
-Package: MixtNormalSB
+﻿Package: MixtNormalSB
 Title: 1-dim. Mixutures Normal Distributions
 Version: 0.0.0.9000
 Authors@R: person("Takayuki", "Uchiba", email = "takayuki.uchiba@sugakubunka.com", role = "aut"))
