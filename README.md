@@ -25,7 +25,7 @@ library(MixtNormalSB)
 library(dplyr)
 library(ggplot2)
 x <- random_mixt_normal(n = 100, mu = c(-4.0, 4.0), sigma = c(1.0, 4.0), ratio = c(0.25, 0.75))
-data <- data_frame(x = x)
+data <- tibble(x = x)
 ggplot(data = data, mapping = aes(x = x)) + geom_histogram(binwidth = 2.0)
 ```
 ```
