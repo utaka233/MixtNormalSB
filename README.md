@@ -36,10 +36,12 @@ result_em <- x %>%
                    init_mu = c(1.0, 1.0),
                    init_sigma = c(1.0, 1.0),
                    init_ratio = c(0.5, 0.5))
-result_em$params    # 母集団パラメータの最尤推定値
-result_em$estimated_component    # 各標本のクラスタリングの結果
-result_em$log_likelihood_history    # 対数尤度の更新履歴
-ggplot(data = result_em$log_likelihood_history,
+summary(result_em)    # 推定結果の概要
+# 各推定結果の詳細
+result_em$params    # 母集団パラメータの最尤推定値に関するtibble
+result_em$estimated_component    # 各標本のクラスタリングの結果のtibble
+result_em$log_likelihood_history    # 対数尤度の更新履歴のtibble
+ggplot(data = result_em$log_likelihood_history,    # 更新結果の可視化
        mapping = aes(x = iter, y = log_likelihood)) +
        geom_line() +
        ggtitle("History of log likelihood")
