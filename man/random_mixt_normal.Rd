@@ -4,7 +4,7 @@
 \alias{random_mixt_normal}
 \title{Random Sampling of 1-dim. Mixtures of Normal Distribution}
 \usage{
-random_mixt_normal(n, mu, sigma, pi)
+random_mixt_normal(n, mu, sigma, ratio)
 }
 \arguments{
 \item{n}{<int scalar> : sample size}
@@ -13,7 +13,7 @@ random_mixt_normal(n, mu, sigma, pi)
 
 \item{sigma}{<double vector> : population sds}
 
-\item{pi}{<double vector> : mixtured rate}
+\item{ratio}{<double vector> : mixtured ratio}
 }
 \value{
 The output will be <double vector> of size n that you input.

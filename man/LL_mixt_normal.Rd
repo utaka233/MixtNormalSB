@@ -4,7 +4,7 @@
 \alias{LL_mixt_normal}
 \title{Log Likelihood of 1-dim. Mixtures of Normal Distribution}
 \usage{
-LL_mixt_normal(x, mu, sigma, pi)
+LL_mixt_normal(x, mu, sigma, ratio)
 }
 \arguments{
 \item{x}{<double vector> : sample point}
@@ -13,7 +13,7 @@ LL_mixt_normal(x, mu, sigma, pi)
 
 \item{sigma}{<double vector> : population sd}
 
-\item{pi}{<double vector> : mixtured rate}
+\item{ratio}{<double vector> : mixtured ratio}
 }
 \value{
 The output is <double vector> that is loglikelihood of each point of x

@@ -4,7 +4,7 @@
 \alias{density_mixt_normal}
 \title{Probability Density Function of 1-dim. Mixtures of Normal Distribution}
 \usage{
-density_mixt_normal(x, mu, sigma, pi)
+density_mixt_normal(x, mu, sigma, ratio)
 }
 \arguments{
 \item{x}{<double vector> : sample point}
@@ -13,7 +13,7 @@ density_mixt_normal(x, mu, sigma, pi)
 
 \item{sigma}{<double vector> : population sd}
 
-\item{pi}{<double vector> : mixtured rate}
+\item{ratio}{<double vector> : mixtured ratio}
 }
 \value{
 The output is <data_frame> that is probability densities of each saple point at each component and mixture distribution.

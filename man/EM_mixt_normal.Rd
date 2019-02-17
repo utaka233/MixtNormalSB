@@ -4,7 +4,7 @@
 \alias{EM_mixt_normal}
 \title{EM Algorithm for 1-dim. Mixtures of Normal Distribution}
 \usage{
-EM_mixt_normal(x, max_iter, tol, init_mu, init_sigma, init_pi)
+EM_mixt_normal(x, max_iter, tol, init_mu, init_sigma, init_ratio)
 }
 \arguments{
 \item{x}{<double vector> : sample}
@@ -17,7 +17,7 @@ EM_mixt_normal(x, max_iter, tol, init_mu, init_sigma, init_pi)
 
 \item{init_sigma}{<double vector> : initial values of population sds}
 
-\item{init_pi}{<double vector> : initial values of population rate}
+\item{init_ratio}{<double vector> : initial values of population ratio}
 }
 \value{
 The output is the set (MLE of params, LL, estimated component of each sample point, n_iter).

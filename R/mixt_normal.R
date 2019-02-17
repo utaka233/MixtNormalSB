@@ -6,7 +6,7 @@
 #' @param n <int scalar> : sample size
 #' @param mu <double vector> : population means
 #' @param sigma <double vector> : population sds
-#' @param pi <double vector> : mixtured rate
+#' @param ratio <double vector> : mixtured ratio
 #' @return The output will be <double vector> of size n that you input.
 #' 
 #' @importFrom dplyr %>%
@@ -14,21 +14,21 @@
 #' @importFrom stats rnorm
 #' @export 
 #' 
-random_mixt_normal <- function(n, mu, sigma, pi){
+random_mixt_normal <- function(n, mu, sigma, ratio){
   # 1. Preliminaries and Error Corrections
   # record a number of components from dimension of the parameter `mu`
   n_components <- length(mu)
-  pi <- pi / sum(pi)
+  ratio <- ratio / sum(ratio)
   # sanity check for dimension of parameters
-  if (length(sigma) != n_components | length(pi) != n_components){
-    stop("Error : dimension of mu, sigma and pi must be the same.")
+  if (length(sigma) != n_components | length(ratio) != n_components){
+    stop("Error : dimension of mu, sigma and ratio must be the same.")
   }
   if (prod(sigma > 0) != 1){
     stop("Error : sigma is not positive.")
   }
   # 2. Main Calculation
   # decide a component that each point is sampled...
-  component_idx <- sample(x = 1:n_components, size = n, prob = pi, replace = TRUE)
+  component_idx <- sample(x = 1:n_components, size = n, prob = ratio, replace = TRUE)
   # sampling
   obj <- list(component_idx = component_idx) %>%
     pmap_dbl(.f = function(component_idx){
@@ -50,7 +50,7 @@ random_mixt_normal <- function(n, mu, sigma, pi){
 #' @param x <double vector> : sample point
 #' @param mu <double vector> : population means
 #' @param sigma <double vector> : population sd
-#' @param pi <double vector> : mixtured rate
+#' @param ratio <double vector> : mixtured ratio
 #' @return The output is <data_frame> that is probability densities of each saple point at each component and mixture distribution.
 #'
 #' @importFrom dplyr %>%
@@ -64,14 +64,14 @@ random_mixt_normal <- function(n, mu, sigma, pi){
 #' @importFrom stats dnorm
 #' @export
 #' 
-density_mixt_normal <- function(x, mu, sigma, pi){
+density_mixt_normal <- function(x, mu, sigma, ratio){
   # 1. Preliminaries and Error Correction
   # number of componets calculated by dimension of parameter `mu`
   n_components <- length(mu)
-  pi <- pi / sum(pi)
+  ratio <- ratio / sum(ratio)
   # sanity check of each parameter's dimension
-  if (length(sigma) != n_components | length(pi) != n_components){
-    stop("Error : dimension of mu, sigma and pi must be the same.")
+  if (length(sigma) != n_components | length(ratio) != n_components){
+    stop("Error : dimension of mu, sigma and ratio must be the same.")
   }
   if (prod(sigma > 0) != 1){
     stop("Error : sigma is not positive.")
@@ -84,7 +84,7 @@ density_mixt_normal <- function(x, mu, sigma, pi){
     map(.f = ~dnorm(., mean = mu, sd = sigma)) %>%
     unlist() %>%
     matrix(byrow = TRUE, ncol = n_components)
-  pd <- as.numeric(pd_each_component %*% pi)
+  pd <- as.numeric(pd_each_component %*% ratio)
   # 3. output
   obj <- as_tibble(pd_each_component)
   colnames(obj) <- str_c("component_", 1:n_components)
@@ -103,26 +103,26 @@ density_mixt_normal <- function(x, mu, sigma, pi){
 #' @param x <double vector> : sample point
 #' @param mu <double vector> : population means
 #' @param sigma <double vector> : population sd
-#' @param pi <double vector> : mixtured rate
+#' @param ratio <double vector> : mixtured ratio
 #' @return The output is <double vector> that is loglikelihood of each point of x 
 #' 
 #' @importFrom dplyr %>%
 #' @export
 #' 
-LL_mixt_normal <- function(x, mu, sigma, pi){
+LL_mixt_normal <- function(x, mu, sigma, ratio){
   # 1. Preliminaries and Error Correction
   # number of components calculated from dimension of mu
   n_components <- length(mu)
   # sanity check
-  if (length(sigma) != n_components | length(pi) != n_components){
-    stop("Error : dimension of mu, sigma and pi must be the same.")
+  if (length(sigma) != n_components | length(ratio) != n_components){
+    stop("Error : dimension of mu, sigma and ratio must be the same.")
   }
   if (prod(sigma > 0) != 1){
     stop("Error : sigma is not positive.")
   }
   # 2. Main Calculation
   # calculation of log likelihood
-  obj <- sum(log(density_mixt_normal(x, mu = mu, sigma = sigma, pi = pi)$prob_density))
+  obj <- sum(log(density_mixt_normal(x, mu = mu, sigma = sigma, ratio = ratio)$prob_density))
   # output
   return(obj)
 }
@@ -138,44 +138,45 @@ LL_mixt_normal <- function(x, mu, sigma, pi){
 #' @param tol <double scalar> : tolerance
 #' @param init_mu <double vector> : initial values of population means
 #' @param init_sigma <double vector> : initial values of population sds
-#' @param init_pi <double vector> : initial values of population rate
+#' @param init_ratio <double vector> : initial values of population ratio
 #' @return The output is the set (MLE of params, LL, estimated component of each sample point, n_iter).
 #' 
 #' @importFrom dplyr data_frame
 #' @importFrom dplyr select
 #' @importFrom dplyr bind_rows
 #' @importFrom purrr map_chr
+#' @importFrom rlang .data
 #' @export
 #' 
-EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_pi){
+EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_ratio){
   # 1. Preliminalies and Error Correction
   # number of components and sample size
   sample_size <- length(x)    # sample size
   n_components <- length(init_mu)
-  init_pi <- init_pi / sum(init_pi)
+  init_ratio <- init_ratio / sum(init_ratio)
   # sanity check for dimension of parameters
-  if (length(init_sigma) != n_components | length(init_pi) != n_components){
-    stop("Error : dimension of mu, sigma and pi must be the same.")
+  if (length(init_sigma) != n_components | length(init_ratio) != n_components){
+    stop("Error : dimension of mu, sigma and ratio must be the same.")
   }
   if (prod(init_sigma > 0) != 1){
     stop("Error : init_sigma is not positive.")
   }
   # 2. Main Calculation
   # settings of initial values
-  mu <- init_mu; sigma <- init_sigma; pi <- init_pi
+  mu <- init_mu; sigma <- init_sigma; ratio <- init_ratio
   # history
-  LL_history <- LL_mixt_normal(x = x, mu = mu, sigma = sigma, pi = pi)
-  params_history <- data_frame(iter = 0, component = 1:n_components, mu = mu, sigma = sigma, pi = pi)
+  LL_history <- LL_mixt_normal(x = x, mu = mu, sigma = sigma, ratio = ratio)
+  params_history <- data_frame(iter = 0, component = 1:n_components, mu = mu, sigma = sigma, ratio = ratio)
   # EM algorithm
   for (iter in 1:max_iter) {
     # E-step : gammma
-    likelihood <- density_mixt_normal(x = x, mu = mu, sigma = sigma, pi = pi)
-    gamma_each_component <- as.matrix(likelihood[ , 3:(2+n_components)] / likelihood$prob_density)
+    likelihood <- density_mixt_normal(x = x, mu = mu, sigma = sigma, ratio = ratio)
+    gamma_each_component <- as.matrix(ratio * likelihood[ , 3:(2+n_components)] / likelihood$prob_density)
     colnames(gamma_each_component) <- as.character(1:n_components) %>%
       map_chr(.f = ~paste0("gamma", .))
     sum_gamma <- colSums(gamma_each_component)
     # M-step
-    pi <- sum_gamma / sample_size    # MLE of pi
+    ratio <- sum_gamma / sample_size    # MLE of ratio
     mu <- as.vector(x %*% gamma_each_component) / sum_gamma    # MLE of mu
     ncol <- length(x); nrow <- n_components    # MLE of sigma
     x_matrix <- matrix(x, byrow = TRUE, nrow = nrow, ncol = ncol)
@@ -184,10 +185,10 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_pi){
       diag((x_matrix - mu_matrix) %*% (gamma_each_component * t(x_matrix - mu_matrix))) / sum_gamma
       )
     LL_history <- append(LL_history,        # recoding history...
-                         LL_mixt_normal(x = x, mu = mu, sigma = sigma, pi = pi))
+                         LL_mixt_normal(x = x, mu = mu, sigma = sigma, ratio = ratio))
     params_history <- bind_rows(
       params_history,
-      data_frame(iter = iter, component = 1:n_components, mu = mu, sigma = sigma, pi = pi)
+      data_frame(iter = iter, component = 1:n_components, mu = mu, sigma = sigma, ratio = ratio)
     )
     # coveragement
     if (abs(LL_history[iter+1]-LL_history[iter]) < tol){
