@@ -33,7 +33,7 @@ ggplot(data = data, mapping = aes(x = x)) + geom_histogram(binwidth = 2.0)
 result_em <- x %>%
     EM_mixt_normal(max_iter = 100,
                    tol = 1.0,
-                   init_mu = c(1.0, 1.0),
+                   init_mu = c(-1.0, 1.0),
                    init_sigma = c(1.0, 1.0),
                    init_ratio = c(0.5, 0.5))
 summary(result_em)    # 推定結果の概要
