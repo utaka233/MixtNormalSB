@@ -24,7 +24,7 @@ library(MixtNormalSB)
 # 乱数生成
 library(dplyr)
 library(ggplot2)
-x <- random_mixt_normal(n = 100, mu = c(-4.0, 4.0), sigma = c(1.0, 4.0), pi = c(0.25, 0.75))
+x <- random_mixt_normal(n = 100, mu = c(-4.0, 4.0), sigma = c(1.0, 4.0), ratio = c(0.25, 0.75))
 data <- data_frame(x = x)
 ggplot(data = data, mapping = aes(x = x)) + geom_histogram(binwidth = 2.0)
 ```
@@ -35,7 +35,7 @@ result_em <- x %>%
                    tol = 1.0,
                    init_mu = c(1.0, 1.0),
                    init_sigma = c(1.0, 1.0),
-                   init_pi = c(0.5, 0.5))
+                   init_ratio = c(0.5, 0.5))
 result_em$params    # 母集団パラメータの最尤推定値
 result_em$estimated_component    # 各標本のクラスタリングの結果
 result_em$log_likelihood_history    # 対数尤度の更新履歴
