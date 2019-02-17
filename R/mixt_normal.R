@@ -211,5 +211,58 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_ratio){
               n_iter = n_iter,
               params_history = params_history,
               log_likelihood_history = LL_history_df)
+  class(obj) <- "EM_MixtNormal"    # define class of the result object...
   return(obj)
+}
+
+
+
+
+
+#' print result of EM_Mixt_Normal
+#' 
+#' @param result <EM_MixtNormal> the result object of the function : em_mixt_normal
+#' 
+print.EM_MixtNormal <- function(result){
+  # some calculations
+  n_components <- length(result$params$component)
+  component_names <- str_c("component_", 1:n_components, ":")
+  # print some results...
+  cat("* Parameters of Components:\n")
+  print(as.data.frame(result$params %>% select(-component)), row.names = component_names)
+  cat("attributes : $params, $log_likelihood, $AIC, $BIC, $estimated_component, $n_iter")
+}
+
+
+
+
+
+#' summary result of EM_Mixt_Normal
+#' 
+#' @param result <EM_MixtNormal> the result object of the function : em_mixt_normal
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarize
+#' @importFrom dplyr select
+#' @importFrom dplyr n
+#' 
+summary.EM_MixtNormal <- function(result){
+  # some calculations
+  n_components <- length(result$params$component)
+  component_names <- str_c("component_", 1:n_components, ":")
+  num_components <- result$estimated_component %>%
+    group_by(estimated_component) %>%
+    summarize(numbers = n()) %>%
+    .$numbers
+  metrics <- c(result$log_likelihood, result$AIC, result$BIC, result$n_iter)
+  names(metrics) <- c("log_likelihood", "AIC", "BIC", "iterations")
+  
+  # print some results...
+  cat("* Numbers of Components:\n")
+  print(data.frame(num_components = num_components, row.names = component_names))
+  cat("\n")
+  cat("* Parameters of Components:\n")
+  print(as.data.frame(result$params %>% select(-component)), row.names = component_names)
+  cat("\n")
+  cat("")
+  print(metrics)
 }
