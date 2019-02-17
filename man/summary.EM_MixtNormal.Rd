@@ -7,7 +7,7 @@
 \method{summary}{EM_MixtNormal}(result)
 }
 \arguments{
-\item{result}{<EM_MixtNormal> the result object of the function : em_mixt_normal}
+\item{result}{<EM_MixtNormal> the result object of the function :}
 }
 \description{
 summary result of EM_Mixt_Normal

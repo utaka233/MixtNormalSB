@@ -239,11 +239,13 @@ print.EM_MixtNormal <- function(result){
 
 #' summary result of EM_Mixt_Normal
 #' 
-#' @param result <EM_MixtNormal> the result object of the function : em_mixt_normal
+#' @param result <EM_MixtNormal> the result object of the function : 
+#' 
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
 #' @importFrom dplyr select
 #' @importFrom dplyr n
+#' @export
 #' 
 summary.EM_MixtNormal <- function(result){
   # some calculations
