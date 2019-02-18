@@ -1,5 +1,5 @@
-# ようこそMixtNormalSBパッケージへ
-`MixtNormalSB`パッケージは混合正規分布まわりの計算、特に
+# ようこそmixturesbパッケージへ
+`mixturesb`パッケージは混合正規分布まわりの計算、特に
 * 乱数生成
 * 確率密度関数の計算
 * 対数尤度関数の計算
@@ -8,11 +8,11 @@
 をサポートするR言語のパッケージです。主に混合正規分布の理解の助けになるパッケージを提供したいという思いから、株式会社すうがくぶんかの教材のひとつとして作成しています。なお、このパッケージではtidyverse styleを尊重するよう心掛けています。
 
 ## Introduction
-`MixtNormalSB`パッケージは、`devtools`パッケージの`install_github`関数を用いてインストールすることができます。
+`mixturesb`パッケージは、`devtools`パッケージの`install_github`関数を用いてインストールすることができます。
 ```
 # Let's install and load our package !
-devtools::install_github("utaka233/MixtNormalSB")
-library(MixtNormalSB)
+devtools::install_github("utaka233/mixturesb")
+library(mixturesb)
 ```
 代表的な使い方の一つは、1次元混合正規分布からの乱数生成とEM algorithmによる最尤推定です。特に
 * EM algorithmによって推定された母集団分布のパラメータ
