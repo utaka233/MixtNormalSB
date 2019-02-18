@@ -19,7 +19,10 @@ library(MixtNormalSB)
 * 各iterationごとの対数尤度の履歴
 * 各データポイントのクラスタリングの結果
 
-はすべて、最初から`tibble`の形でoutputされます。
+をすべて`tibble`の形で取得することも、簡単に`summary`関数を用いて概要をチェックすることも可能です。`plot`関数を用いれば、EM algorithmの対数尤度の更新履歴を簡単に確認することもできます。
+
+### 乱数生成のスクリプト
+1次元混合正規分布からの乱数生成は次のように行うことが出来ます。
 ```
 # 乱数生成
 library(dplyr)
@@ -28,6 +31,9 @@ x <- random_mixt_normal(n = 100, mu = c(-4.0, 4.0), sigma = c(1.0, 4.0), ratio =
 data <- tibble(x = x)
 ggplot(data = data, mapping = aes(x = x)) + geom_histogram(binwidth = 2.0)
 ```
+
+### EM algorithm
+先ほどサンプリングした1次元混合正規分布の乱数に対して、(log-)EM algorithmを用いて最尤推定を行ってみましょう。
 ```
 # EM algorithm
 result_em <- x %>%
@@ -37,12 +43,13 @@ result_em <- x %>%
                    init_sigma = c(1.0, 1.0),
                    init_ratio = c(0.5, 0.5))
 summary(result_em)    # 推定結果の概要
+plot(result_em)    # ggplot2によるiterationごとの対数尤度の更新履歴
+```
+
+### tibbleよるEM algorithmのoutputの取得
+```
 # 各推定結果の詳細
 result_em$params    # 母集団パラメータの最尤推定値に関するtibble
 result_em$estimated_component    # 各標本のクラスタリングの結果のtibble
 result_em$log_likelihood_history    # 対数尤度の更新履歴のtibble
-ggplot(data = result_em$log_likelihood_history,    # 更新結果の可視化
-       mapping = aes(x = iter, y = log_likelihood)) +
-       geom_line() +
-       ggtitle("History of log likelihood")
 ```
