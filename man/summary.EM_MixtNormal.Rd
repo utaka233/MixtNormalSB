@@ -4,11 +4,13 @@
 \alias{summary.EM_MixtNormal}
 \title{summary result of EM_Mixt_Normal}
 \usage{
-\method{summary}{EM_MixtNormal}(result)
+\method{summary}{EM_MixtNormal}(object, ...)
 }
 \arguments{
-\item{result}{<EM_MixtNormal> the result object of the function :}
+\item{object}{<EM_MixtNormal> the result object of the function :}
+
+\item{...}{additional arguments affecting the summary produced.}
 }
 \description{
-summary result of EM_Mixt_Normal
+summary.EM_MixtNormal used to procedure result summaries of the result of the function : EM_mixt_normal.
 }

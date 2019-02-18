@@ -141,9 +141,10 @@ LL_mixt_normal <- function(x, mu, sigma, ratio){
 #' @param init_ratio <double vector> : initial values of population ratio
 #' @return The output is the set (MLE of params, LL, estimated component of each sample point, n_iter).
 #' 
-#' @importFrom dplyr data_frame
+#' @importFrom dplyr tibble
 #' @importFrom dplyr select
 #' @importFrom dplyr bind_rows
+#' @importFrom purrr map2_df
 #' @importFrom purrr map_chr
 #' @importFrom rlang .data
 #' @export
@@ -166,12 +167,15 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_ratio){
   mu <- init_mu; sigma <- init_sigma; ratio <- init_ratio
   # history
   LL_history <- LL_mixt_normal(x = x, mu = mu, sigma = sigma, ratio = ratio)
-  params_history <- data_frame(iter = 0, component = 1:n_components, mu = mu, sigma = sigma, ratio = ratio)
+  params_history <- tibble(iter = 0, component = 1:n_components, mu = mu, sigma = sigma, ratio = ratio)
   # EM algorithm
   for (iter in 1:max_iter) {
     # E-step : gammma
     likelihood <- density_mixt_normal(x = x, mu = mu, sigma = sigma, ratio = ratio)
-    gamma_each_component <- as.matrix(ratio * likelihood[ , 3:(2+n_components)] / likelihood$prob_density)
+    gamma_each_component <- as.matrix(
+      map2_df(.x = likelihood[ , 3:(2+n_components)], .y = ratio, .f = function(x, y){x * y}) /
+        likelihood$prob_density
+      )
     colnames(gamma_each_component) <- as.character(1:n_components) %>%
       map_chr(.f = ~paste0("gamma", .))
     sum_gamma <- colSums(gamma_each_component)
@@ -188,7 +192,7 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_ratio){
                          LL_mixt_normal(x = x, mu = mu, sigma = sigma, ratio = ratio))
     params_history <- bind_rows(
       params_history,
-      data_frame(iter = iter, component = 1:n_components, mu = mu, sigma = sigma, ratio = ratio)
+      tibble(iter = iter, component = 1:n_components, mu = mu, sigma = sigma, ratio = ratio)
     )
     # coveragement
     if (abs(LL_history[iter+1]-LL_history[iter]) < tol){
@@ -239,7 +243,9 @@ print.EM_MixtNormal <- function(result){
 
 #' summary result of EM_Mixt_Normal
 #' 
-#' @param result <EM_MixtNormal> the result object of the function : 
+#' summary.EM_MixtNormal used to procedure result summaries of the result of the function : EM_mixt_normal.
+#' @param object <EM_MixtNormal> the result object of the function : 
+#' @param ... additional arguments affecting the summary produced.
 #' 
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
@@ -247,15 +253,15 @@ print.EM_MixtNormal <- function(result){
 #' @importFrom dplyr n
 #' @export
 #' 
-summary.EM_MixtNormal <- function(result){
+summary.EM_MixtNormal <- function(object, ...){
   # some calculations
-  n_components <- length(result$params$component)
+  n_components <- length(object$params$component)
   component_names <- str_c("component_", 1:n_components, ":")
-  num_components <- result$estimated_component %>%
+  num_components <- object$estimated_component %>%
     group_by(estimated_component) %>%
     summarize(numbers = n()) %>%
     .$numbers
-  metrics <- c(result$log_likelihood, result$AIC, result$BIC, result$n_iter)
+  metrics <- c(object$log_likelihood, object$AIC, object$BIC, object$n_iter)
   names(metrics) <- c("log_likelihood", "AIC", "BIC", "iterations")
   
   # print some results...
@@ -263,8 +269,29 @@ summary.EM_MixtNormal <- function(result){
   print(data.frame(num_components = num_components, row.names = component_names))
   cat("\n")
   cat("* Parameters of Components:\n")
-  print(as.data.frame(result$params %>% select(-component)), row.names = component_names)
+  print(as.data.frame(object$params %>% select(-component)), row.names = component_names)
   cat("\n")
   cat("")
   print(metrics)
+}
+
+
+
+
+#' Plot of EM_Mixt_Normal
+#' 
+#' @param x <EM_MixtNormal> the result object of the function : 
+#' @param ... Arguments to be passed to methods.
+#' 
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_line
+#' @importFrom ggplot2 ggtitle
+#' 
+plot.EM_MixtNormal <- function(x, ...){
+  plt <- ggplot(data = x$log_likelihood_history,    # 更新結果の可視化
+         mapping = aes(x = iter, y = log_likelihood)) +
+    geom_line() +
+    ggtitle("History of log likelihood")
+  return(plt)
 }

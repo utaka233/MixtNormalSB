@@ -1,15 +1,17 @@
 Package: MixtNormalSB
-Title: 1-dim. Mixutures Normal Distributions
+Title: 1-DIM. MIXTURES OF NORMAL DISTRIBUTIONS
 Version: 0.0.0.9000
 Authors@R: person("Takayuki", "Uchiba", email = "takayuki.uchiba@sugakubunka.com", role = c("aut", "cre"))
-Description:  random sampling and EM-algorithm for 1-dim. mixutures normal distributions
+Description: The methods of random sampling and EM-algorithm for 1-dim. mixutures normal distributions.
 Depends: R (>= 3.4.4)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
-Imports: dplyr,
+Imports: 
+    dplyr,
     purrr,
     stats,
     stringr,
-    rlang
+    rlang,
+    ggplot2
