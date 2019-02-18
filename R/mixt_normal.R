@@ -51,7 +51,7 @@ random_mixt_normal <- function(n, mu, sigma, ratio){
 #' @param mu <double vector> : population means
 #' @param sigma <double vector> : population sd
 #' @param ratio <double vector> : mixtured ratio
-#' @return The output is <data_frame> that is probability densities of each saple point at each component and mixture distribution.
+#' @return The output is <tibble> that is probability densities of each saple point at each component and mixture distribution.
 #'
 #' @importFrom dplyr %>%
 #' @importFrom dplyr as_tibble
@@ -84,10 +84,10 @@ density_mixt_normal <- function(x, mu, sigma, ratio){
     map(.f = ~dnorm(., mean = mu, sd = sigma)) %>%
     unlist() %>%
     matrix(byrow = TRUE, ncol = n_components)
+  colnames(pd_each_component) <- str_c("component_", 1:n_components)
   pd <- as.numeric(pd_each_component %*% ratio)
   # 3. output
   obj <- as_tibble(pd_each_component)
-  colnames(obj) <- str_c("component_", 1:n_components)
   obj <- obj %>%
     mutate(prob_density = pd, x = x) %>%
     select(x, prob_density, everything())
@@ -201,8 +201,8 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_ratio){
   }
   # 3. output
   n_iter <- iter
-  LL_history_df <- data_frame(iter = 0:n_iter, log_likelihood = LL_history)
-  data_estimated_component <- data_frame(x = x, estimated_component = max.col(gamma_each_component))
+  LL_history_df <- tibble(iter = 0:n_iter, log_likelihood = LL_history)
+  data_estimated_component <- tibble(x = x, estimated_component = max.col(gamma_each_component))
   LL_last <- LL_history_df %>% filter(iter == n_iter) %>% .$log_likelihood
   AIC <- -2 * LL_last + 2 * (3 * n_components - 1)
   BIC <- -2 * LL_last + (3 * n_components - 1) * log(sample_size)

@@ -16,7 +16,7 @@ density_mixt_normal(x, mu, sigma, ratio)
 \item{ratio}{<double vector> : mixtured ratio}
 }
 \value{
-The output is <data_frame> that is probability densities of each saple point at each component and mixture distribution.
+The output is <tibble> that is probability densities of each saple point at each component and mixture distribution.
 }
 \description{
 Set sample point x and parameters of MixtNormal(mu,sigma,pi).
