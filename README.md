@@ -21,7 +21,8 @@ library(mixturesb)
 
 をすべて`tibble`の形で取得することも、簡単に`summary`関数を用いて概要をチェックすることも可能です。`plot`関数を用いれば、EM algorithmの対数尤度の更新履歴を簡単に確認することもできます。
 
-### 乱数生成のスクリプト
+## 1. 簡単な使い方
+### 1.1 乱数生成
 1次元混合正規分布からの乱数生成は次のように行うことが出来ます。
 ```
 # 乱数生成
@@ -33,7 +34,7 @@ ggplot(data = data, mapping = aes(x = x)) + geom_histogram(binwidth = 2.0)
 ```
 <img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/histogram_of_x.png" alt = "ヒストグラム" width="400" />
 
-### EM algorithm
+### 1.2 EM algorithm
 先ほどサンプリングした1次元混合正規分布の乱数に対して、(log-)EM algorithmを用いて最尤推定を行ってみましょう。
 ```
 # EM algorithm
@@ -48,7 +49,7 @@ plot(result_em)    # ggplot2によるiterationごとの対数尤度の更新履�
 ```
 <img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/history_LL.png" alt = "EMアルゴリズムの更新履歴" width="400" />
 
-### tibbleよるEM algorithmのoutputの取得
+## 2. tibbleよるEM algorithmのoutputの取得
 ```
 # 各推定結果の詳細
 result_em$params    # 母集団パラメータの最尤推定値に関するtibble
