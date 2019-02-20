@@ -330,3 +330,28 @@ plot_components <- function(x, binwidth){
   return(plt)
 }
 
+
+
+
+
+#' predict component that each datapoint belongs to
+#' 
+#' @param object <EM_MixtNormal> result of EM_mixt_normal
+#' @param x <double_scalar> 1-dim. data points
+#' @param ... additional arguments
+#' 
+#' @importFrom purrr pmap
+#' @importFrom stats dnorm
+#' @export
+#' 
+predict.EM_MixtNormal <- function(object, x, ...){
+  n_components <- length(object$params$component)
+  params_list <- list(mu = object$params$mu,
+                      sigma = object$params$sigma,
+                      ratio = object$params$ratio)
+  gamma <- params_list %>% pmap(.f = function(mu, sigma, ratio){
+    ratio * dnorm(x, mu, sigma)
+  })
+  obj <- max.col(matrix(unlist(gamma), ncol = n_components))
+  return(obj)
+}
