@@ -32,7 +32,7 @@ x <- random_mixt_normal(n = 100, mu = c(-4.0, 4.0), sigma = c(1.0, 4.0), ratio =
 data <- tibble(x = x)
 ggplot(data = data, mapping = aes(x = x)) + geom_histogram(binwidth = 2.0)
 ```
-<img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/histogram_of_x.png" alt = "ヒストグラム" width="400" />
+<img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/histogram_of_x.png" alt = "ヒストグラム" width="250" />
 
 ### 1.2 EM algorithm
 先ほどサンプリングした1次元混合正規分布の乱数に対して、(log-)EM algorithmを用いて最尤推定を行ってみましょう。
@@ -48,7 +48,7 @@ summary(result_em)    # 推定結果の概要
 plot_LL(result_em)    # ggplot2によるiterationごとの対数尤度の更新履歴
 plot_components(result_em, binwidth = 2.0)    # ggplot2によるcomponent推定の結果の可視化
 ```
-<img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/history_LL.png" alt = "EMアルゴリズムの更新履歴" width="400" />
+<img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/history_LL.png" alt = "EMアルゴリズムの更新履歴" width="200" /><img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/plot_components.png" alt = "EMアルゴリズムの更新履歴" width="500" />
 
 ## 2. tibbleよるEM algorithmのoutputの取得
 ```
