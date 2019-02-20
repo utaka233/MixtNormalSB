@@ -313,7 +313,8 @@ plot_LL <- function(x){
 
 #' Plot of histogram of components
 #' 
-#' @param x <EM_MixtNormal> the result object of the function : 
+#' @param x <EM_MixtNormal> the result object of the function : EM_mixt_normal
+#' @param binwidth <int_scalar> binwidth of histogram
 #' 
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 aes
@@ -321,10 +322,10 @@ plot_LL <- function(x){
 #' @importFrom ggplot2 ggtitle
 #' @export
 #' 
-plot_components <- function(x){
+plot_components <- function(x, binwidth){
   plt <- ggplot(data = x$estimated_component,
                 mapping = aes(x = x, fill = estimated_component)) +
-    geom_histogram(binwidth = 1.0, alpha = 0.3) +
+    geom_histogram(binwidth = binwidth, alpha = 0.3) +
     ggtitle("Result of component estimation : EM-algorithm")
   return(plt)
 }

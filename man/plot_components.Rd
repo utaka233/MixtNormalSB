@@ -4,10 +4,12 @@
 \alias{plot_components}
 \title{Plot of histogram of components}
 \usage{
-plot_components(x)
+plot_components(x, binwidth)
 }
 \arguments{
-\item{x}{<EM_MixtNormal> the result object of the function :}
+\item{x}{<EM_MixtNormal> the result object of the function : EM_mixt_normal}
+
+\item{binwidth}{<int_scalar> binwidth of histogram}
 }
 \description{
 Plot of histogram of components
