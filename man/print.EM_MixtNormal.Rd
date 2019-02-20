@@ -4,10 +4,12 @@
 \alias{print.EM_MixtNormal}
 \title{print result of EM_Mixt_Normal}
 \usage{
-\method{print}{EM_MixtNormal}(result)
+\method{print}{EM_MixtNormal}(x, ...)
 }
 \arguments{
-\item{result}{<EM_MixtNormal> the result object of the function : em_mixt_normal}
+\item{x}{<EM_MixtNormal> the result object of the function : em_mixt_normal}
+
+\item{...}{additional arguments}
 }
 \description{
 print result of EM_Mixt_Normal

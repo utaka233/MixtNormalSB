@@ -167,7 +167,11 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_ratio){
   mu <- init_mu; sigma <- init_sigma; ratio <- init_ratio
   # history
   LL_history <- LL_mixt_normal(x = x, mu = mu, sigma = sigma, ratio = ratio)
-  params_history <- tibble(iter = 0, component = 1:n_components, mu = mu, sigma = sigma, ratio = ratio)
+  params_history <- tibble(iter = 0,
+                           component = as.character(1:n_components),
+                           mu = mu,
+                           sigma = sigma,
+                           ratio = ratio)
   # EM algorithm
   for (iter in 1:max_iter) {
     # E-step : gammma
@@ -192,7 +196,11 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_ratio){
                          LL_mixt_normal(x = x, mu = mu, sigma = sigma, ratio = ratio))
     params_history <- bind_rows(
       params_history,
-      tibble(iter = iter, component = 1:n_components, mu = mu, sigma = sigma, ratio = ratio)
+      tibble(iter = iter,
+             component = as.character(1:n_components),
+             mu = mu,
+             sigma = sigma,
+             ratio = ratio)
     )
     # coveragement
     if (abs(LL_history[iter+1]-LL_history[iter]) < tol){
@@ -202,7 +210,9 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_ratio){
   # 3. output
   n_iter <- iter
   LL_history_df <- tibble(iter = 0:n_iter, log_likelihood = LL_history)
-  data_estimated_component <- tibble(x = x, estimated_component = max.col(gamma_each_component))
+  estimated_component <- str_c("component", max.col(gamma_each_component))
+  data_estimated_component <- tibble(x = x,
+                                     estimated_component = estimated_component)
   LL_last <- LL_history_df %>% filter(iter == n_iter) %>% .$log_likelihood
   AIC <- -2 * LL_last + 2 * (3 * n_components - 1)
   BIC <- -2 * LL_last + (3 * n_components - 1) * log(sample_size)
@@ -225,16 +235,16 @@ EM_mixt_normal <- function(x, max_iter, tol, init_mu, init_sigma, init_ratio){
 
 #' print result of EM_Mixt_Normal
 #' 
-#' @param result <EM_MixtNormal> the result object of the function : em_mixt_normal
-#' @export
+#' @param x <EM_MixtNormal> the result object of the function : em_mixt_normal
+#' @param ... additional arguments
 #' 
-print.EM_MixtNormal <- function(result){
+print.EM_MixtNormal <- function(x, ...){
   # some calculations
-  n_components <- length(result$params$component)
+  n_components <- length(x$params$component)
   component_names <- str_c("component_", 1:n_components, ":")
   # print some results...
   cat("* Parameters of Components:\n")
-  print(as.data.frame(result$params %>% select(-component)), row.names = component_names)
+  print(as.data.frame(x$params %>% select(-component)), row.names = component_names)
   cat("attributes : $params, $log_likelihood, $AIC, $BIC, $estimated_component, $n_iter")
 }
 
@@ -279,10 +289,9 @@ summary.EM_MixtNormal <- function(object, ...){
 
 
 
-#' Plot of EM_Mixt_Normal
+#' Plot of history of loglikelihood
 #' 
 #' @param x <EM_MixtNormal> the result object of the function : 
-#' @param ... Arguments to be passed to methods.
 #' 
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 aes
@@ -290,10 +299,33 @@ summary.EM_MixtNormal <- function(object, ...){
 #' @importFrom ggplot2 ggtitle
 #' @export
 #' 
-plot.EM_MixtNormal <- function(x, ...){
+plot_LL <- function(x){
   plt <- ggplot(data = x$log_likelihood_history,    # 更新結果の可視化
          mapping = aes(x = iter, y = log_likelihood)) +
     geom_line() +
     ggtitle("History of log likelihood")
   return(plt)
 }
+
+
+
+
+
+#' Plot of histogram of components
+#' 
+#' @param x <EM_MixtNormal> the result object of the function : 
+#' 
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_histogram
+#' @importFrom ggplot2 ggtitle
+#' @export
+#' 
+plot_components <- function(x){
+  plt <- ggplot(data = x$estimated_component,
+                mapping = aes(x = x, fill = estimated_component)) +
+    geom_histogram(binwidth = 1.0, alpha = 0.3) +
+    ggtitle("Result of component estimation : EM-algorithm")
+  return(plt)
+}
+
