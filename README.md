@@ -46,7 +46,7 @@ result_em <- x %>%
                    init_ratio = c(0.5, 0.5))
 summary(result_em)    # 推定結果の概要
 plot_LL(result_em)    # ggplot2によるiterationごとの対数尤度の更新履歴
-plot_components(result_em)    # ggplot2によるcomponent推定の結果の可視化
+plot_components(result_em, binwidth = 2.0)    # ggplot2によるcomponent推定の結果の可視化
 ```
 <img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/history_LL.png" alt = "EMアルゴリズムの更新履歴" width="400" />
 
