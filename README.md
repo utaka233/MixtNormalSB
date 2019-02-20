@@ -1,13 +1,13 @@
 # ようこそmixturesbパッケージへ
 `mixturesb`パッケージは混合正規分布まわりの計算、特に
-* 乱数生成
-* 確率密度関数の計算
-* 対数尤度関数の計算
-* EMアルゴリズムによる最尤推定およびクラスタリング
+* `random_mixt_normal` : 乱数生成
+* `density_mixt_normal` : 確率密度関数の計算
+* `LL_mixt_normal` : 対数尤度関数の計算
+* `EM_mixt_normal` : EMアルゴリズムによる最尤推定およびクラスタリング 
 
-をサポートするR言語のパッケージです。主に混合正規分布の理解の助けになるパッケージを提供したいという思いから、株式会社すうがくぶんかの教材のひとつとして作成しています。なお、このパッケージではtidyverse styleを尊重するよう心掛けています。
+をサポートするR言語のパッケージです。主に混合正規分布の理解の助けになるパッケージを提供したいという思いから、**株式会社すうがくぶんか**の教材のひとつとして作成しています。なお、このパッケージではtidyverse styleを尊重するよう心掛けています。また、将来的には混合分布全般の乱数生成やEM-algorithm、Bayes推定の提供を目標にしています。
 
-## Introduction
+## Installation
 `mixturesb`パッケージは、`devtools`パッケージの`install_github`関数を用いてインストールすることができます。
 ```
 # Let's install and load our package !
@@ -21,8 +21,8 @@ library(mixturesb)
 
 をすべて`tibble`の形で取得することも、簡単に`summary`関数を用いて概要をチェックすることも可能です。`plot`関数を用いれば、EM algorithmの対数尤度の更新履歴を簡単に確認することもできます。
 
-## 1. 簡単な使い方
-### 1.1 乱数生成
+## 1. Usage
+### 1.1 generate random values of 1-dim. mixtures of normal distribution
 1次元混合正規分布からの乱数生成は次のように行うことが出来ます。
 ```
 # 乱数生成
@@ -34,7 +34,7 @@ ggplot(data = data, mapping = aes(x = x)) + geom_histogram(binwidth = 2.0)
 ```
 <img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/histogram_of_x.png" alt = "ヒストグラム" width="250" />
 
-### 1.2 EM algorithm
+### 1.2 EM algorithm for 1-dim. mixtures of normal distribution
 先ほどサンプリングした1次元混合正規分布の乱数に対して、(log-)EM algorithmを用いて最尤推定を行ってみましょう。
 ```
 # EM algorithm
@@ -50,7 +50,7 @@ plot_components(result_em, binwidth = 2.0)    # ggplot2によるcomponent推定�
 ```
 <img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/history_LL.png" alt = "EMアルゴリズムの更新履歴" width="200" /><img src="https://github.com/utaka233/garage/blob/master/imgs_mixturesb/plot_components.png" alt = "EMアルゴリズムの更新履歴" width="500" />
 
-## 2. tibbleよるEM algorithmのoutputの取得
+## 2. Getting tibble of the EM-algorithm results
 ```
 # 各推定結果の詳細
 result_em$params    # 母集団パラメータの最尤推定値に関するtibble
