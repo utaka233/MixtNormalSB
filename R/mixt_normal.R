@@ -367,6 +367,7 @@ predict.EM_MixtNormal <- function(object, x, ...){
 #' @param result <EM_MixtNormal>
 #' @param width <double_scalar> image size
 #' @param height <double_scalar> image size
+#' @y_max <double_scalar> y_max
 #' @param file_name <string> gif file name
 #' 
 #' @importFrom stringr str_c
@@ -376,14 +377,18 @@ predict.EM_MixtNormal <- function(object, x, ...){
 #' @importFrom ggplot2 stat_function
 #' @importFrom ggplot2 ggtitle
 #' @importFrom ggplot2 ggsave
+#' @importFrom ggplot2 ylim
 #' @export
 #' 
 plot_history <- function(result, width = 5.00, height = 5.00, file_name = "history_of_EM"){
   n_iter <- result$n_iter
   n_components <- length(result$params$component)
-  png_path <- str_c(tempdir(), "/plt", 1:n_iter, ".png")
-  for(i in 0:n_iter){
-    params_each_iter <- result$params_history %>% filter(iter == i)
+  x_min <- min(result$estimated_component$x)
+  x_max <- max(result$estimated_component$x)
+  y_max <- 5 * 1 / (x_max - x_min)
+  png_path <- str_c(tempdir(), "/plt", 0:n_iter, ".png")
+  for(i in 1:(n_iter + 1)){
+    params_each_iter <- result$params_history %>% filter(iter == (i - 1))
     mu <- params_each_iter$mu
     sigma <- params_each_iter$sigma
     ratio <- params_each_iter$ratio
@@ -393,7 +398,8 @@ plot_history <- function(result, width = 5.00, height = 5.00, file_name = "histo
       stat_function(fun = function(x,mu,sigma,ratio){density_mixt_normal(x,mu,sigma,ratio)$prob_density},
                     args = list(mu = mu, sigma = sigma, ratio = ratio),
                     colour = "blue") +
-      ggtitle(paste0("History of EM-algorithm, iteration : ", i, "/", n_iter, "."))
+      ggtitle(paste0("History of EM-algorithm, iteration : ", (i - 1), "/", n_iter, ".")) +
+      ylim(c(0, y_max))
     for(j in 1:n_components){
       plt <- plt + stat_function(fun = function(x, mu, sigma, ratio){ratio*dnorm(x,mu,sigma)},
                                  args = list(mu = mu[j], sigma = sigma[j], ratio = ratio[j]),
