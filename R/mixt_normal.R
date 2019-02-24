@@ -382,7 +382,7 @@ plot_history <- function(result, width = 5.00, height = 5.00, file_name = "histo
   n_iter <- result$n_iter
   n_components <- length(result$params$component)
   png_path <- str_c(tempdir(), "/plt", 1:n_iter, ".png")
-  for(i in 1:n_iter){
+  for(i in 0:n_iter){
     params_each_iter <- result$params_history %>% filter(iter == i)
     mu <- params_each_iter$mu
     sigma <- params_each_iter$sigma
